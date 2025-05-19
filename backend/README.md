@@ -19,4 +19,4 @@ npm run start:dev
 ```
 
 App should be available on
-http://localhost:4000/currency-conversion.
+http://localhost:4000/api.
