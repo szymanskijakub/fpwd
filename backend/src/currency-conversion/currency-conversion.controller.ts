@@ -9,16 +9,35 @@ export class CurrencyConversionController {
   @Get()
   async convertCurrency(@Query() query: ConvertCurrencyDto) {
     try {
-      const convertedAmount =
+      const { exchangeAmount: convertedAmount } =
         await this.currencyConversionService.convertFromEuroToPln(query.amount);
 
       return {
         convertedAmount,
+
         status: HttpStatus.OK,
       };
     } catch (error) {
       return {
-        error: error.message,
+        error: error?.message,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      };
+    }
+  }
+
+  @Get('rate')
+  async getExchangeRate() {
+    try {
+      const exchangeRate =
+        await this.currencyConversionService.getCurrentExchangeRate();
+
+      return {
+        exchangeRate,
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      return {
+        error: error?.message,
         status: HttpStatus.INTERNAL_SERVER_ERROR,
       };
     }

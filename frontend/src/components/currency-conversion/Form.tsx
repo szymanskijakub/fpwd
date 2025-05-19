@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader } from "@/components/currency-conversion/Loader";
 
-interface ResponseData {
+interface ConvertCurrencyResponseData {
   convertedAmount: number;
+  status: number;
+}
+
+interface CurrencyRateResponseData {
+  exchangeRate: number;
   status: number;
 }
 
@@ -14,6 +19,31 @@ export const Form = () => {
   const [amount, setAmount] = useState<number>(0);
   const [requestState, setRequestState] = useState<ResponseStates>("idle");
   const [convertedAmount, setConvertedAmount] = useState<number>(0);
+  const [exchangeRate, setExchangeRate] = useState<number>(0);
+
+  useEffect(() => {
+    if (!exchangeRate) {
+      fetchExchangeRate();
+    }
+  }, []);
+
+  const fetchExchangeRate = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/currency-conversion/rate`,
+        {
+          method: "GET",
+        },
+      );
+
+      const data: CurrencyRateResponseData = await response.json();
+
+      setExchangeRate(data.exchangeRate);
+    } catch (error) {
+      console.error("Error:", error);
+      return null;
+    }
+  };
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +61,7 @@ export const Form = () => {
         },
       );
 
-      const data: ResponseData = await response.json();
+      const data: ConvertCurrencyResponseData = await response.json();
 
       setConvertedAmount(data.convertedAmount);
       setRequestState("success");
@@ -46,7 +76,7 @@ export const Form = () => {
     <>
       <form onSubmit={handleOnSubmit} className={"flex flex-wrap w-[300px]"}>
         <label htmlFor="amount" className={"w-full font-bold"}>
-          Amount in EUR
+          Amount in EUR (1 EUR ~ {exchangeRate} PLN)
         </label>
         <input
           className={"w-full border rounded py-1 px-2"}

@@ -14,21 +14,27 @@ export class CurrencyConversionService {
   ) {}
 
   async convertFromEuroToPln(amount: number) {
+    const exchangeRate = await this.getCurrentExchangeRate();
+
+    const exchangeAmount = Number((amount * exchangeRate).toFixed(4));
+
+    return { exchangeAmount };
+  }
+
+  async getCurrentExchangeRate() {
     let exchangeRate: number = this.cachedRate?.exchangeRate;
 
     if (
       this.cachedRate?.expiresAt < Date.now() ||
       !this.cachedRate?.expiresAt
     ) {
-      exchangeRate = await this.getExchangeRate();
+      exchangeRate = await this.fetchExchangeRate();
     }
 
-    const exchangeAmount = Number((amount * exchangeRate).toFixed(4));
-
-    return exchangeAmount;
+    return exchangeRate;
   }
 
-  async getExchangeRate(): Promise<number> {
+  async fetchExchangeRate(): Promise<number> {
     const response = await firstValueFrom(
       this.httpService.get(
         `https://ldktuanhf9.execute-api.eu-central-1.amazonaws.com/api`,
