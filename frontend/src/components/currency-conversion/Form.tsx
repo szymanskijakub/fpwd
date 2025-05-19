@@ -22,12 +22,10 @@ export const Form = () => {
   const [exchangeRate, setExchangeRate] = useState<number>(0);
 
   useEffect(() => {
-    if (!exchangeRate) {
-      fetchExchangeRate();
-    }
-  }, [exchangeRate]);
+    getExchangeRate();
+  }, [exchangeRate, convertedAmount]);
 
-  const fetchExchangeRate = async () => {
+  const getExchangeRate = async () => {
     try {
       const response = await fetch(
         `http://localhost:4000/currency-conversion/rate`,
