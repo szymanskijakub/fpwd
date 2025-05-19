@@ -25,7 +25,7 @@ export const Form = () => {
     if (!exchangeRate) {
       fetchExchangeRate();
     }
-  }, []);
+  }, [exchangeRate]);
 
   const fetchExchangeRate = async () => {
     try {
