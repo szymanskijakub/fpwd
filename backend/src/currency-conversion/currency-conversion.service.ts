@@ -28,7 +28,7 @@ export class CurrencyConversionService {
     return exchangeAmount;
   }
 
-  async getExchangeRate(): Promise<any> {
+  async getExchangeRate(): Promise<number> {
     const response = await firstValueFrom(
       this.httpService.get(
         `https://ldktuanhf9.execute-api.eu-central-1.amazonaws.com/api`,
@@ -40,7 +40,7 @@ export class CurrencyConversionService {
       ),
     );
 
-    const resData = response.data;
+    const resData = response.data as { exchange_rate: number };
 
     this.cachedRate = {
       exchangeRate: resData.exchange_rate,
