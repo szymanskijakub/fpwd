@@ -1,0 +1,16 @@
+import { AppController } from './app.controller';
+import { CurrencyConversionModule } from './currency-transactions/currency-conversion.module';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+@Module({
+  imports: [
+    CurrencyConversionModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+  ],
+  controllers: [AppController],
+})
+export class AppModule {}
